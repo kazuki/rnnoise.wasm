@@ -33,10 +33,14 @@ async function main() {
   console.log(audio_track.getConstraints());
   console.log(audio_track.getSettings());
 
-  const src_node = audio_ctx.createMediaStreamTrackSource(audio_track);
+  const src_node =
+    audio_ctx.createMediaStreamTrackSource ?
+    audio_ctx.createMediaStreamTrackSource(audio_track) :
+    audio_ctx.createMediaStreamSource(stream);
   const worklet_node = new AudioWorkletNode(audio_ctx, 'rnnoise-processor');
   src_node.connect(worklet_node);
   worklet_node.port.postMessage(wasm.module);
+  audio_ctx.resume();
 
   const zero_filled: number[] = [];
   for (let i = 0; i < 1000; i++)

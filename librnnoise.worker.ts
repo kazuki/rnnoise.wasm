@@ -38,9 +38,9 @@ class RNNoiseProcessor extends AudioWorkletProcessor {
 
   process(inputs: Float32Array[][], outputs: Float32Array[][], parameters: any) {
     if (this.wasm_exports === undefined)
-      return false;
-    if (inputs.length !== 1 || outputs.length !== 1)
-      return false;
+      return true;
+    if (inputs.length !== 1 || outputs.length !== 1 || inputs[0].length == 0 || inputs[0][0] === undefined)
+      return true;
     let input = inputs[0][0];
     let output = outputs[0][0];
 
@@ -57,6 +57,7 @@ class RNNoiseProcessor extends AudioWorkletProcessor {
         this.filled = 0;
       }
     }
+    return true;
   }
 }
 registerProcessor('rnnoise-processor', RNNoiseProcessor);
